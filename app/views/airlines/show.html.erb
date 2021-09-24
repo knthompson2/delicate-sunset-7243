@@ -1,0 +1,8 @@
+<h2> <%= @airline.name %> </h2>
+
+<h3> Adult Passengers: </h3>
+<% @airline.adult_passengers_by_flight_count.each do |passenger| %>
+  <ul>
+    <li> <%= passenger.name %> -- <%= passenger.flight_count %> total flights</li>
+  </ul>
+<% end %>

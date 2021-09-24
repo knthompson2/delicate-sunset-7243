@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.describe 'flights index page' do
+RSpec.describe 'airline show page' do
   before :each do
     @southwest = Airline.create!(name: "Southwest")
     @frontier = Airline.create!(name: "Frontier")
@@ -18,7 +18,6 @@ RSpec.describe 'flights index page' do
     FlightPassenger.create!(flight: @flight_1, passenger: @susie)
     FlightPassenger.create!(flight: @flight_2, passenger: @susie)
     FlightPassenger.create!(flight: @flight_1, passenger: @kevin)
-    FlightPassenger.create!(flight: @flight_2, passenger: @kevin)
     FlightPassenger.create!(flight: @flight_3, passenger: @susie)
     FlightPassenger.create!(flight: @flight_4, passenger: @susie)
     FlightPassenger.create!(flight: @flight_3, passenger: @teddy)
@@ -26,37 +25,18 @@ RSpec.describe 'flights index page' do
     FlightPassenger.create!(flight: @flight_4, passenger: @lauren)
   end
 
-  it 'lists all flight numbers with their airline and all passengers' do
-    visit "/flights"
+  it 'lists all names of adult passengers for all flights on airline' do
+    visit "/airlines/#{@frontier.id}"
+    save_and_open_page
+    expect(page).to have_content(@bob.name)
+    expect(page).to have_content(@susie.name)
+    expect(page).to have_content(@kevin.name)
+    expect(@susie.name).to appear_before(@bob.name)
+    expect(@bob.name).to appear_before(@kevin.name)
+    #teddy is not an adult
+    expect(page).to_not have_content(@teddy.name)
+    #lauren is only a passenger on southwest
+    expect(page).to_not have_content(@lauren.name)
 
-    expect(page).to have_content(@flight_1.number)
-    expect(page).to have_content(@flight_2.number)
-    expect(page).to have_content(@flight_3.number)
-    expect(page).to have_content(@flight_4.number)
-
-    within("#flights-#{@flight_1.id}") do
-      expect(page).to have_content(@flight_1.number)
-      expect(page).to have_content(@frontier.name)
-      expect(page).to have_content(@susie.name)
-      expect(page).to have_content(@bob.name)
-      expect(page).to have_content(@kevin.name)
-    end
-
-  end
-
-  it 'has a button next to each passenger to remove passenger from flight' do
-    visit "/flights"
-
-    within("#flights-#{@flight_1.id}") do
-      expect(page).to have_content(@susie.name)
-      within("#passenger-#{@susie.id}") do
-        click_on "Remove Passenger"
-      end
-      expect(current_path).to eq("/flights")
-      expect(page).to_not have_content(@susie.name)
-    end
-    within("#flights-#{@flight_2.id}") do
-      expect(page).to have_content(@susie.name)
-    end
   end
 end

@@ -24,6 +24,7 @@ RSpec.describe 'flights index page' do
     FlightPassenger.create!(flight: @flight_3, passenger: @teddy)
     FlightPassenger.create!(flight: @flight_4, passenger: @teddy)
     FlightPassenger.create!(flight: @flight_4, passenger: @lauren)
+
   end
 
   it 'lists all flight numbers with their airline and all passengers' do
@@ -40,6 +41,23 @@ RSpec.describe 'flights index page' do
       expect(page).to have_content(@susie.name)
       expect(page).to have_content(@bob.name)
       expect(page).to have_content(@kevin.name)
+    end
+
+  end
+
+  it 'has a button next to each passenger to remove passenger from flight' do
+    visit "/flights"
+
+    within("#flights-#{@flight_1.id}") do
+      expect(page).to have_content(@susie.name)
+      within("#passenger-#{@susie.id}") do
+        click_on "Remove Passenger"
+      end
+      expect(current_path).to eq("/flights")
+      expect(page).to_not have_content(@susie.name)
+    end
+    within("#flights-#{@flight_2.id}") do
+      expect(page).to have_content(@susie.name)
     end
   end
 end

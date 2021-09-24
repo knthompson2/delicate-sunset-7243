@@ -8,9 +8,11 @@
       <ul>
         <li>  <%= flight.airline.name %> </li>
             <% flight.passengers.each do |passenger| %>
+            <section id="passenger-<%= passenger.id %>">
           <ul>
-            <li> <%= passenger.name %> </li>
+            <li> <%= passenger.name %> <%= button_to 'Remove Passenger', "/flights/#{flight.id}/passengers/#{passenger.id}", method: :delete %></li>
           </ul>
+          </section>
           <% end %>
       </ul>
 </section>
